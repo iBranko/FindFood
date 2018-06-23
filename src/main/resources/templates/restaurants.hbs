@@ -1,0 +1,14 @@
+{{#partial "content"}}
+
+    <h1>Restaurants:</h1>
+
+    {{#if allRestaurants}}
+        {{#each allRestaurants }}
+            <p>{{ content }} <a href="/restaurant/{{id}}">read more...</a></p>
+        {{/each}}
+    {{else}}
+        <p>No restaurants yet!</p>
+    {{/if}}
+{{/partial}}
+
+{{> layout.hbs}}

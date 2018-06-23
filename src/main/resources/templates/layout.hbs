@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{#block "title"}}FindFood{{/block}}</title>
+
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>
+</head>
+<body>
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active"><a href="#">Home</a></li>
+    <li role="presentation"><a href="/restaurants">See All Restaurants</a></li>
+    <li role="presentation"><a href="/restaurants/new">Add a restaurant!</a></li>
+</ul>
+<div class="container">
+    <!--begin main template-->
+    <div class="page-header">
+        <!--<img src="/images/caspar-rubin-224229.jpg" width="70%">-->
+        <h1>Welcome to my FindFood. <small>Let's find food for you!</small></h1>
+    </div>
+
+    <div class="col-md-12">
+        {{#block "content"}}
+        {{/block}}
+
+    </div>
+</div>
+<!--end main template-->
+{{#block "footer"}}
+    <footer class="footer">
+<!--        <div class="container">
+            <p class="text-muted"><a href="/delete">DELETE ALL</a></p>
+        </div> -->
+    </footer>
+    </body>
+    </html>
+{{/block}}
