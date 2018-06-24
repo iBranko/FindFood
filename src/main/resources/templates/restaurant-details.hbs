@@ -1,16 +1,11 @@
 {{#partial "content"}}
-    <p>Restaurant:</p>
-    <p>{{ restaurant.name }}</p>
-    <h5>Address:</h5>
-    <p> {{ restaurant.address }}</p>
-    <h5>Phone:</h5>
-    <p> {{ restaurant.phone }}</p>
-    <h5>Website:</h5>
-    <p> {{ restaurant.website }}</p>
-    <h5>Email:</h5>
-    <p> {{ restaurant.email }}</p>
+    <p>Restaurant: {{ restaurant.name }}</p>
+    <p>Address: {{ restaurant.address }}</p>
+    <p>Phone: {{ restaurant.phone }}</p>
+    <p>Website: {{ restaurant.website }}</p>
+    <p>Email: {{ restaurant.email }}</p>
     <p>
-        <a href="/posts/{{post.id}}/ask">Find food!</a><br>
+        <a href="/restaurants/{{restaurant.id}}/ask">Find food!</a><br>
     </p>
 {{/partial}}
 
