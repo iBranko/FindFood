@@ -94,7 +94,6 @@ class Sql2oFoodDaoTest {
         return new Food("Thai");
     }
 
-    //Helpers
     Restaurant setupRestaurant1() {
         return new Restaurant("While Whale", "333 Papa St", "12345", "504-222-3333", "www.whilewhale.com", "www.while@whale.com");
     }

@@ -5,12 +5,8 @@ import models.Food;
 import models.Restaurant;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
-import spark.ModelAndView;
-import spark.template.handlebars.HandlebarsTemplateEngine;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static spark.Spark.after;
 import static spark.Spark.get;
@@ -91,8 +87,8 @@ public class AppJson {
         get("/restaurants/:id/foods", "application/json", (req, res) -> {
             int restaurantId = Integer.parseInt(req.params("id"));
 
-            if (restaurantDao.getAllFoodByRestaurant(restaurantId).size() > 0) {
-                return gson.toJson(restaurantDao.getAllFoodByRestaurant(restaurantId));
+            if (restaurantDao.getAllFoodByRestaurantId(restaurantId).size() > 0) {
+                return gson.toJson(restaurantDao.getAllFoodByRestaurantId(restaurantId));
             } else {
                 return gson.toJson("{\"message\": \"This restaurant is not serving food yet.\"}");
             }

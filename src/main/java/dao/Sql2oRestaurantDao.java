@@ -43,16 +43,15 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     }
 
     public List<Restaurant> getAll() {
-        String query = "SELECT * FROM restaurants";
+        String query = "SELECT * FROM restaurants ORDER BY name";
         try (Connection con = sql2o.open()) {
-            List<Restaurant> allRestaurants = con.createQuery(query)
+            return con.createQuery(query)
                     .executeAndFetch(Restaurant.class);
-            return allRestaurants;
         }
     }
 
     @Override
-    public List<Food> getAllFoodByRestaurant(int restaurantId) {
+    public List<Food> getAllFoodByRestaurantId(int restaurantId) {
         List<Food> foods = new ArrayList<>();
 
         String joinQuery = "SELECT foodId FROM restaurants_foods WHERE restaurantid = :restaurantId";
@@ -63,7 +62,7 @@ public class Sql2oRestaurantDao implements RestaurantDao {
                     .executeAndFetch(Integer.class);
 
             for (Integer foodId : allFoodIds) {
-                String foodQuery = "SELECT * FROM foods where id = :foodId";
+                String foodQuery = "SELECT * FROM foods where id = :foodId ORDER BY name";
                 foods.add(con.createQuery(foodQuery)
                         .addParameter("foodId", foodId)
                         .executeAndFetchFirst(Food.class)
@@ -77,7 +76,14 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     }
 
     public void update(Restaurant restaurant) {
-
+        String query = "UPDATE restaurants SET name = :name, address = :address, zipcode = :zipcode, phone = :phone, website = :website, email = :email";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(query)
+                    .bind(restaurant)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void addRestaurantToFoodType(Restaurant restaurant, Food food) {
@@ -103,6 +109,12 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     }
 
     public void clearAll() {
-
+        String query = "TRUNCATE TABLE restaurants";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(query)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            ex.printStackTrace();
+        }
     }
 }

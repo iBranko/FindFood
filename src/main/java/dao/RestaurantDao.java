@@ -15,7 +15,7 @@ public interface RestaurantDao {
 
     List<Restaurant> getAll();
 
-    List<Food> getAllFoodByRestaurant(int id);
+    List<Food> getAllFoodByRestaurantId(int id);
 
     //UPDATE
     void update(Restaurant restaurant);
