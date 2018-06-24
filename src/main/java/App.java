@@ -23,8 +23,8 @@ public class App {
         Connection con;
         Gson gson = new Gson();
 
-        //String connectionString = "jdbc:h2:~/FoodFind.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
-        String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
+        String connectionString = "jdbc:h2:~/FoodFind.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
+        //String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
 
         restaurantDao = new Sql2oRestaurantDao(sql2o);
@@ -49,7 +49,6 @@ public class App {
             String email = req.queryParams("email");
             Restaurant restaurant = new Restaurant(name, address, zipcode, phone, website, email);
             restaurantDao.add(restaurant);
-            System.out.println(restaurantDao.getById(1));
             model.put("restaurant", restaurant);
             return new ModelAndView(model, "success.hbs");
         }, new HandlebarsTemplateEngine());
