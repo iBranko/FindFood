@@ -1,12 +1,12 @@
 SET MODE PostgreSQL;
 
-DROP TABLE restaurants;
+/*DROP TABLE restaurants;
 DROP table foods;
 drop table couriers;
 drop table customers;
 drop table reviews;
 drop table tickets;
-drop table restaurants_foods;
+drop table restaurants_foods;*/
 
 CREATE TABLE IF NOT EXISTS restaurants (
  id int PRIMARY KEY auto_increment,
