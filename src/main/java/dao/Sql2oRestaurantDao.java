@@ -42,6 +42,17 @@ public class Sql2oRestaurantDao implements RestaurantDao {
         }
     }
 
+    @Override
+    public List<Restaurant> getByName(String name) {
+        String query = "SELECT * FROM restaurants WHERE name like :name";
+        try (Connection con = sql2o.open()) {
+            return con.createQuery(query)
+                    .addParameter("name", "%" + name + "%")
+                    .executeAndFetch(Restaurant.class);
+        }
+
+    }
+
     public List<Restaurant> getAll() {
         String query = "SELECT * FROM restaurants ORDER BY name";
         try (Connection con = sql2o.open()) {

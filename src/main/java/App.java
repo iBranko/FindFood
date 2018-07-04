@@ -23,7 +23,7 @@ public class App {
         Connection con;
         Gson gson = new Gson();
 
-        String connectionString = "jdbc:h2:~/FoodFind.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
+        String connectionString = "jdbc:h2:~/FoodFind.db;INIT=RUNSCRIPT from 'classpath:DB/create.sql'";
         //String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
 
@@ -71,6 +71,14 @@ public class App {
         get("/", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             return new ModelAndView(model, "index.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        get("/results", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            String text = req.queryParams("text");
+            List<Restaurant> allRestaurants = restaurantDao.getByName(text);
+            model.put("allRestaurants", allRestaurants);
+            return new ModelAndView(model, "restaurants.hbs");
         }, new HandlebarsTemplateEngine());
 
         //DELETE

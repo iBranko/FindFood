@@ -13,16 +13,18 @@ public interface RestaurantDao {
     //READ
     Restaurant getById(int id);
 
+    List<Restaurant> getByName(String name);
+
     List<Restaurant> getAll();
 
     List<Food> getAllFoodByRestaurantId(int id);
-
     //UPDATE
+
     void update(Restaurant restaurant);
 
     void addRestaurantToFoodType(Restaurant restaurant, Food food);
-
     //DELETE
+
     void deleteById(int id);
 
     void clearAll();

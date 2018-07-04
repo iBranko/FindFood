@@ -49,6 +49,13 @@ class Sql2oRestaurantDaoTest {
     }
 
     @Test
+    void getByName_CorrectRestaurantReturned() {
+        Restaurant restaurant = setupRestaurant1();
+        restaurantDao.add(restaurant);
+        assertEquals(restaurant, restaurantDao.getByName(restaurant.getName()));
+    }
+
+    @Test
     void getAll_AllRestaurantsReturned() {
         Restaurant restaurant1 = setupRestaurant1();
         restaurantDao.add(restaurant1);
