@@ -1,11 +1,14 @@
 {{#partial "content"}}
     <p>Restaurant: {{ restaurant.name }}</p>
-    <p>Address: {{ restaurant.address }}</p>
+    <p>Address: {{ restaurant.address }} {{ restaurant.zipcode }}</p>
     <p>Phone: {{ restaurant.phone }}</p>
     <p>Website: {{ restaurant.website }}</p>
     <p>Email: {{ restaurant.email }}</p>
     <p>
-        <a href="/restaurants/{{restaurant.id}}/ask">Find food!</a><br>
+        <a href="/restaurants/{{restaurant.id}}/update">Edit</a>
+    </p>
+    <p>
+        <a href="/restaurants/{{restaurant.id}}/ask" class="btn btn-primary">Find food!</a><br>
     </p>
 {{/partial}}
 

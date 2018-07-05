@@ -44,7 +44,7 @@ public class Sql2oRestaurantDao implements RestaurantDao {
 
     @Override
     public List<Restaurant> getByName(String name) {
-        String query = "SELECT * FROM restaurants WHERE name like :name";
+        String query = "SELECT * FROM restaurants WHERE lower(name) like lower(:name)";
         try (Connection con = sql2o.open()) {
             return con.createQuery(query)
                     .addParameter("name", "%" + name + "%")
@@ -54,7 +54,7 @@ public class Sql2oRestaurantDao implements RestaurantDao {
     }
 
     public List<Restaurant> getAll() {
-        String query = "SELECT * FROM restaurants ORDER BY name";
+        String query = "SELECT * FROM restaurants ORDER BY lower(name)";
         try (Connection con = sql2o.open()) {
             return con.createQuery(query)
                     .executeAndFetch(Restaurant.class);
@@ -73,7 +73,7 @@ public class Sql2oRestaurantDao implements RestaurantDao {
                     .executeAndFetch(Integer.class);
 
             for (Integer foodId : allFoodIds) {
-                String foodQuery = "SELECT * FROM foods where id = :foodId ORDER BY name";
+                String foodQuery = "SELECT * FROM foods where id = :foodId ORDER BY lower(name)";
                 foods.add(con.createQuery(foodQuery)
                         .addParameter("foodId", foodId)
                         .executeAndFetchFirst(Food.class)
@@ -86,8 +86,9 @@ public class Sql2oRestaurantDao implements RestaurantDao {
         return foods;
     }
 
+    //UPDATE
     public void update(Restaurant restaurant) {
-        String query = "UPDATE restaurants SET name = :name, address = :address, zipcode = :zipcode, phone = :phone, website = :website, email = :email";
+        String query = "UPDATE restaurants SET name = :name, address = :address, zipcode = :zipcode, phone = :phone, website = :website, email = :email WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(query)
                     .bind(restaurant)

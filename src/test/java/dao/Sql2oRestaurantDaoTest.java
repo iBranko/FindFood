@@ -108,6 +108,24 @@ class Sql2oRestaurantDaoTest {
         assertEquals(restaurant, updatedRestaurant);
     }
 
+    @Test
+    void update_OnlyTargetRestaurantUpdated() {
+        Restaurant restaurant1 = setupRestaurant1();
+        restaurantDao.add(restaurant1);
+
+        Restaurant restaurant2 = setupRestaurant2();
+        restaurantDao.add(restaurant2);
+
+        String newName = "Whole Whale";
+        restaurant1.setName(newName);
+        restaurantDao.update(restaurant1);
+
+        restaurant2 = restaurantDao.getById(restaurant2.getId());
+
+        Restaurant updatedRestaurant = restaurantDao.getById(restaurant1.getId());
+        assertNotEquals(restaurant2.getName(), updatedRestaurant.getName());
+    }
+
     //DELETE
     @Test
     void deleteById_CorrectRestaurantDeleted() {

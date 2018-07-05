@@ -1,23 +1,33 @@
 {{#partial "content"}}
 
-    <h1>Add a new Restaurant!</h1>
 
-    <form action="/restaurants/new" method="post">
+    {{#if editRestaurant}}
+        <h1>Edit informations</h1>
+        <form action="/restaurants/{{editRestaurant.id}}/update" method="post">
+    {{else}}
+        <h1>Add a new Restaurant!</h1>
+        <form action="/restaurants/new" method="post">
+    {{/if}}
+
         <div class="form-group">
             <div class="col-xs-4">
                 <label for="name">Name</label>
-                <input id="name" name="name" type="text" class="form-control"><br>
+                <input id="name" name="name" type="text" class="form-control" value="{{editRestaurant.name}}"><br>
                 <label for="address">Address</label>
-                <input id="address" name="address" type="text" class="form-control"><br>
+                <input id="address" name="address" type="text" class="form-control" value="{{editRestaurant.address}}"><br>
                 <label for="zipcode">Zipcode</label>
-                <input id="zipcode" name="zipcode" type="text" class="form-control"><br>
+                <input id="zipcode" name="zipcode" type="text" class="form-control" value="{{editRestaurant.zipcode}}"><br>
                 <label for="phone">Phone</label>
-                <input id="phone" name="phone" type="text" class="form-control"><br>
+                <input id="phone" name="phone" type="text" class="form-control" value="{{editRestaurant.phone}}"><br>
                 <label for="website">Website</label>
-                <input id="website" name="website" type="text" class="form-control"><br>
+                <input id="website" name="website" type="text" class="form-control" value="{{editRestaurant.website}}"><br>
                 <label for="email">Email</label>
-                <input id="email" name="email" type="text" class="form-control"><br>
+                <input id="email" name="email" type="text" class="form-control" value="{{editRestaurant.email}}"><br>
+            {{#if editRestaurant}}
+                <button type="submit" class="btn btn-default">Save</button>
+            {{else}}
                 <button type="submit" class="btn btn-default">Add new restaurant</button>
+            {{/if}}
             </div>
         </div>
     </form>

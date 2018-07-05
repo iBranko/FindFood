@@ -81,6 +81,39 @@ public class App {
             return new ModelAndView(model, "restaurants.hbs");
         }, new HandlebarsTemplateEngine());
 
+        //UPDATE
+        get("/restaurants/:id/update", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int restaurantId = Integer.parseInt(req.params("id"));
+            Restaurant restaurant = restaurantDao.getById(restaurantId);
+            model.put("editRestaurant", restaurant);
+            return new ModelAndView(model, "restaurant-form.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        post("/restaurants/:id/update", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int restaurantId = Integer.parseInt(req.params("id"));
+            Restaurant restaurant = restaurantDao.getById(restaurantId);
+
+            String newName = req.queryParams("name");
+            restaurant.setName(newName);
+            String newAddress = req.queryParams("address");
+            restaurant.setAddress(newAddress);
+            String newZipcode = req.queryParams("zipcode");
+            restaurant.setZipcode(newZipcode);
+            String newPhone = req.queryParams("phone");
+            restaurant.setPhone(newPhone);
+            String newWebsite = req.queryParams("website");
+            restaurant.setWebsite(newWebsite);
+            String newEmail = req.queryParams("email");
+            restaurant.setEmail(newEmail);
+            restaurantDao.update(restaurant);
+
+            model.put("restaurant", restaurant);
+
+            return new ModelAndView(model, "restaurant-details.hbs");
+        }, new HandlebarsTemplateEngine());
+
         //DELETE
 
 
