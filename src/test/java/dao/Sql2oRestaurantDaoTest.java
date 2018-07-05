@@ -52,7 +52,22 @@ class Sql2oRestaurantDaoTest {
     void getByName_CorrectRestaurantReturned() {
         Restaurant restaurant = setupRestaurant1();
         restaurantDao.add(restaurant);
-        assertEquals(restaurant, restaurantDao.getByName(restaurant.getName()));
+
+        assertEquals(restaurant, restaurantDao.getByName(restaurant.getName()).get(0));
+    }
+
+    @Test
+    void getByName_MultipleRestaurantsReturnedWithSameName() {
+        Restaurant restaurant1 = setupRestaurant1();
+        restaurantDao.add(restaurant1);
+
+        Restaurant restaurant2 = setupRestaurant1();
+        restaurantDao.add(restaurant2);
+
+        List<Restaurant> foundRestaurants = restaurantDao.getByName(restaurant1.getName());
+
+        assertTrue(foundRestaurants.contains(restaurant1));
+        assertTrue(foundRestaurants.contains(restaurant2));
     }
 
     @Test
@@ -128,12 +143,20 @@ class Sql2oRestaurantDaoTest {
 
     //DELETE
     @Test
-    void deleteById_CorrectRestaurantDeleted() {
-        Restaurant restaurant = setupRestaurant1();
-        restaurantDao.add(restaurant);
-        int restaurantId = restaurant.getId();
-        restaurantDao.deleteById(restaurantId);
-        assertNull(restaurantDao.getById(restaurantId));
+    void deleteById_OnlyTargetRestaurantDeleted() {
+        Restaurant restaurant1 = setupRestaurant1();
+        restaurantDao.add(restaurant1);
+
+        Restaurant restaurant2 = setupRestaurant2();
+        restaurantDao.add(restaurant2);
+
+        int restaurant1Id = restaurant1.getId();
+        restaurantDao.deleteById(restaurant1Id);
+
+        int restaurant2Id = restaurant2.getId();
+
+        assertNull(restaurantDao.getById(restaurant1Id));
+        assertNotNull(restaurantDao.getById(restaurant2Id));
     }
 
     @Test
