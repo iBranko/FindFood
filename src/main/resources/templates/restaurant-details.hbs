@@ -1,11 +1,25 @@
 {{#partial "content"}}
-    <p>Restaurant: {{ restaurant.name }}</p>
-    <p>Address: {{ restaurant.address }} {{ restaurant.zipcode }}</p>
-    <p>Phone: {{ restaurant.phone }}</p>
-    <p>Website: {{ restaurant.website }}</p>
-    <p>Email: {{ restaurant.email }}</p>
+    {{#if edited}}
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Restaurant updated!</strong>
+        </div>
+    {{/if}}
+    <p>Restaurant: {{restaurant.name}}</p>
+    <p>Address: {{restaurant.address}}, zip: {{restaurant.zipcode}}</p>
+    <p>Phone: {{restaurant.phone}}</p>
+    <p>Website: {{restaurant.website}}</p>
+    <p>Email: {{restaurant.email}}</p>
     <p>
-        <a href="/restaurants/{{restaurant.id}}/update">Edit</a>
+        <a href="/restaurants/{{restaurant.id}}/update" class="btn btn-warning">Edit</a>
+        <button type="button" data-toggle="collapse" data-target="#delete" class="btn btn-danger">Delete</button>
+        <div id="delete" class="collapse">
+            <div class="alert alert-danger">
+                Are you sure you want to delete {{restaurant.name}}?
+            </div>
+            <a href="/restaurants/{{restaurant.id}}/delete" class="btn btn-success">Yes</a>
+            <button type="button" data-toggle="collapse" data-target="#delete" class="btn btn-danger">No</button>
+        </div>
     </p>
     <p>
         <a href="/restaurants/{{restaurant.id}}/ask" class="btn btn-primary">Find food!</a><br>

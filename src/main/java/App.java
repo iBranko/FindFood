@@ -34,8 +34,7 @@ public class App {
         //CREATE
         get("restaurants/new", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
-            List<Restaurant> allRestaurants = restaurantDao.getAll();
-            model.put("allRestaurants", allRestaurants);
+            model.put("allRestaurants", restaurantDao.getAll());
             return new ModelAndView(model, "restaurant-form.hbs");
         }, new HandlebarsTemplateEngine());
 
@@ -50,7 +49,9 @@ public class App {
             Restaurant restaurant = new Restaurant(name, address, zipcode, phone, website, email);
             restaurantDao.add(restaurant);
             model.put("restaurant", restaurant);
-            return new ModelAndView(model, "success.hbs");
+            model.put("addedRestaurantName", name);
+            model.put("allRestaurants", restaurantDao.getAll());
+            return new ModelAndView(model, "restaurants.hbs");
         }, new HandlebarsTemplateEngine());
 
         //READ
@@ -110,11 +111,21 @@ public class App {
             restaurantDao.update(restaurant);
 
             model.put("restaurant", restaurant);
+            model.put("edited", true);
 
             return new ModelAndView(model, "restaurant-details.hbs");
         }, new HandlebarsTemplateEngine());
 
         //DELETE
+        get("/restaurants/:id/delete", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int restaurantId = Integer.parseInt(req.params("id"));
+            String name = restaurantDao.getById(restaurantId).getName();
+            model.put("deletedRestaurantName", name);
+            restaurantDao.deleteById(restaurantId);
+            model.put("allRestaurants", restaurantDao.getAll());
+            return new ModelAndView(model, "restaurants.hbs");
+        }, new HandlebarsTemplateEngine());
 
 
     }

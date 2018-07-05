@@ -1,5 +1,17 @@
 {{#partial "content"}}
 
+    {{#if deletedRestaurantName}}
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>{{deletedRestaurantName}}</strong> deleted.
+        </div>
+    {{else if addedRestaurantName}}
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>{{addedRestaurantName}}</strong> added.
+        </div>
+    {{/if}}
+
     <h1>Restaurants:</h1>
 
     {{#if allRestaurants}}
@@ -7,7 +19,7 @@
             <p>{{ content }} <a href="/restaurant/{{id}}">{{name}}</a></p>
         {{/each}}
     {{else}}
-        <p>No restaurants yet!</p>
+        <p>No restaurants found!</p>
     {{/if}}
 {{/partial}}
 
