@@ -13,6 +13,8 @@ public interface FoodDao {
     //READ
     Food getById(int id);
 
+    List<Food> getByName(String name);
+
     List<Food> getAll();
 
     List<Restaurant> getAllRestaurantsForAFoodType(int foodtypeId);
@@ -25,6 +27,5 @@ public interface FoodDao {
     //DELETE
     void deleteById(int id);
 
-    void deleteAll();
-
+    void clearAll();
 }

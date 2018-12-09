@@ -174,6 +174,47 @@ class Sql2oRestaurantDaoTest {
         assertEquals(0, restaurantsAfterClear);
     }
 
+    @Test
+    void clearAllFoods_AllFoodsForThisRestaurantDeleted() {
+        Restaurant restaurant = setupRestaurant1();
+        restaurantDao.add(restaurant);
+
+        Food food1 = setupBrazilianFood();
+        foodDao.add(food1);
+        restaurantDao.addRestaurantToFoodType(restaurant, food1);
+
+        int foodsBeforeClear = restaurantDao.getAllFoodByRestaurantId(restaurant.getId()).size();
+
+        restaurantDao.clearAllFoodsByRestautantId(restaurant.getId());
+
+        int foodsAfterClear = restaurantDao.getAllFoodByRestaurantId(restaurant.getId()).size();
+
+        assertTrue(foodsBeforeClear > 0);
+        assertEquals(0, foodsAfterClear);
+    }
+
+    @Test
+    void clearAllFoods_AllFoodsForThisRestaurantOnlyDeleted() {
+        Restaurant restaurant1 = setupRestaurant1();
+        restaurantDao.add(restaurant1);
+
+        Restaurant restaurant2 = setupRestaurant2();
+        restaurantDao.add(restaurant2);
+
+        Food food1 = setupBrazilianFood();
+        foodDao.add(food1);
+        restaurantDao.addRestaurantToFoodType(restaurant1, food1);
+        restaurantDao.addRestaurantToFoodType(restaurant2, food1);
+
+        restaurantDao.clearAllFoodsByRestautantId(restaurant1.getId());
+
+        int foodsAfterClear = restaurantDao.getAllFoodByRestaurantId(restaurant1.getId()).size();
+        int foodsRestaurant2 = restaurantDao.getAllFoodByRestaurantId(restaurant2.getId()).size();
+
+        assertTrue(foodsRestaurant2 > 0);
+        assertEquals(0, foodsAfterClear);
+    }
+
     //Helpers
     private Restaurant setupRestaurant1() {
         return new Restaurant("While Whale", "333 Papa St", "12345", "504-222-3333", "www.whilewhale.com", "while@whale.com");

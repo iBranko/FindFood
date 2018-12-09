@@ -24,6 +24,7 @@ class Sql2oFoodDaoTest {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
         foodDao = new Sql2oFoodDao(sql2o);
+        restaurantDao = new Sql2oRestaurantDao(sql2o);
         conn = sql2o.open();
     }
 
@@ -32,6 +33,7 @@ class Sql2oFoodDaoTest {
         conn.close();
     }
 
+    //CREATE
     @Test
     void add_CorrectlyIdAssociated() {
         Food food = setupChineseFood();
@@ -39,11 +41,34 @@ class Sql2oFoodDaoTest {
         assertEquals(1, food.getId());
     }
 
+    //READ
     @Test
     void getById_CorrectFoodReturned() {
         Food food = setupChineseFood();
         foodDao.add(food);
         assertEquals(food, foodDao.getById(food.getId()));
+    }
+
+    @Test
+    void getByName_CorrectFoodReturned() {
+        Food food = setupChineseFood();
+        foodDao.add(food);
+
+        assertEquals(food, foodDao.getByName(food.getName()).get(0));
+    }
+
+    @Test
+    void getByName_MultipleFoodsReturnedWithSameName() {
+        Food food1 = setupChineseFood();
+        foodDao.add(food1);
+
+        Food food2 = setupChineseFood();
+        foodDao.add(food2);
+
+        List<Food> foundFoods = foodDao.getByName(food1.getName());
+
+        assertTrue(foundFoods.contains(food1));
+        assertTrue(foundFoods.contains(food2));
     }
 
     @Test
@@ -58,6 +83,57 @@ class Sql2oFoodDaoTest {
     }
 
     @Test
+    void getAllRestaurantsByFoodId_AllRestaurantsForASpecificFoodReturned() {
+        Food food = setupChineseFood();
+        foodDao.add(food);
+
+        Restaurant restaurant1 = setupRestaurant1();
+        restaurantDao.add(restaurant1);
+        foodDao.addFoodToRestaurant(food, restaurant1);
+
+
+        Restaurant restaurant2 = setupRestaurant2();
+        restaurantDao.add(restaurant2);
+        foodDao.addFoodToRestaurant(food, restaurant2);
+
+        List<Restaurant> restaurants = foodDao.getAllRestaurantsForAFoodType(food.getId());
+        assertTrue(restaurants.contains(restaurant1) && restaurants.contains(restaurant2));
+    }
+
+    //UPDATE
+    @Test
+    void update_InformationsUpdated() {
+        Food food = setupChineseFood();
+        foodDao.add(food);
+
+        String newName = "Caribean";
+        food.setName(newName);
+        foodDao.update(food);
+
+        Food updatedFood = foodDao.getById(food.getId());
+        assertEquals(food, updatedFood);
+    }
+
+    @Test
+    void update_OnlyTargetFoodUpdated() {
+        Food food1 = setupChineseFood();
+        foodDao.add(food1);
+
+        Food food2 = setupBrazilianFood();
+        foodDao.add(food2);
+
+        String newName = "Caribean";
+        food1.setName(newName);
+        foodDao.update(food1);
+
+        food2 = foodDao.getById(food2.getId());
+
+        Food updatedFood = foodDao.getById(food1.getId());
+        assertNotEquals(food2.getName(), updatedFood.getName());
+    }
+
+    //DELETE
+    @Test
     void delete_CorrectFoodDeleted() {
         Food food = setupChineseFood();
         foodDao.add(food);
@@ -67,18 +143,18 @@ class Sql2oFoodDaoTest {
     }
 
     @Test
-    void addFoodTypeToRestaurant_CorrectlyAdded() {
-        Restaurant restaurant1 = setupRestaurant1();
-        Restaurant restaurant2 = setupRestaurant2();
+    void clearAll_AllFoodsDeleted() {
+        Food food1 = setupChineseFood();
+        foodDao.add(food1);
 
-        Food foodtype = setupChineseFood();
+        Food food2 = setupBrazilianFood();
+        foodDao.add(food2);
 
-        foodDao.add(foodtype);
+        foodDao.clearAll();
 
-        foodDao.addFoodToRestaurant(foodtype, restaurant1);
-        foodDao.addFoodToRestaurant(foodtype, restaurant2);
+        int foodsAfterClear = foodDao.getAll().size();
 
-        assertEquals(2, foodDao.getAllRestaurantsForAFoodType(foodtype.getId()).size());
+        assertEquals(0, foodsAfterClear);
     }
 
     //Helpers

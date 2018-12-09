@@ -18,14 +18,18 @@ public interface RestaurantDao {
     List<Restaurant> getAll();
 
     List<Food> getAllFoodByRestaurantId(int id);
+
     //UPDATE
 
     void update(Restaurant restaurant);
 
     void addRestaurantToFoodType(Restaurant restaurant, Food food);
+
     //DELETE
 
     void deleteById(int id);
 
     void clearAll();
+
+    void clearAllFoodsByRestautantId(int id);
 }

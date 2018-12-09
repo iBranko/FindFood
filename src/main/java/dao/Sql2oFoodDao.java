@@ -43,6 +43,16 @@ public class Sql2oFoodDao implements FoodDao{
     }
 
     @Override
+    public List<Food> getByName(String name) {
+        String query = "SELECT * FROM foods WHERE lower(name) like lower(:name)";
+        try (Connection con = sql2o.open()) {
+            return con.createQuery(query)
+                    .addParameter("name", "%" + name + "%")
+                    .executeAndFetch(Food.class);
+        }
+    }
+
+    @Override
     public List<Food> getAll() {
         String query = "SELECT * FROM foods";
         try (Connection con = sql2o.open()) {
@@ -64,9 +74,8 @@ public class Sql2oFoodDao implements FoodDao{
                     .executeAndFetch(Integer.class);
 
             for (Integer restaurantId : allRestaurantIds) {
-                String restaurantQuery = "SELECT * FROM restaurants WHERE id = :restaurantId";
-                restaurants.add(
-                        con.createQuery(restaurantQuery)
+                String restaurantQuery = "SELECT * FROM restaurants WHERE id = :restaurantId ORDER BY lower(name)";
+                restaurants.add(con.createQuery(restaurantQuery)
                                 .addParameter("restaurantId", restaurantId)
                                 .executeAndFetchFirst(Restaurant.class)
                 );
@@ -80,7 +89,14 @@ public class Sql2oFoodDao implements FoodDao{
 
     @Override
     public void update(Food food) {
-
+        String query = "UPDATE foods SET name = :name WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(query)
+                    .bind(food)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -107,7 +123,13 @@ public class Sql2oFoodDao implements FoodDao{
     }
 
     @Override
-    public void deleteAll() {
-
+    public void clearAll() {
+        String query = "TRUNCATE TABLE foods";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(query)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            ex.printStackTrace();
+        }
     }
 }

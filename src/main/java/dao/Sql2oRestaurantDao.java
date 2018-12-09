@@ -7,6 +7,8 @@ import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Sql2oRestaurantDao implements RestaurantDao {
@@ -73,12 +75,20 @@ public class Sql2oRestaurantDao implements RestaurantDao {
                     .executeAndFetch(Integer.class);
 
             for (Integer foodId : allFoodIds) {
-                String foodQuery = "SELECT * FROM foods where id = :foodId ORDER BY lower(name)";
+                String foodQuery = "SELECT * FROM foods where id = :foodId";
                 foods.add(con.createQuery(foodQuery)
                         .addParameter("foodId", foodId)
                         .executeAndFetchFirst(Food.class)
                 );
             }
+
+            foods.sort(new Comparator<Food>() {
+                @Override
+                public int compare(Food o1, Food o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+
         } catch (Sql2oException ex) {
             ex.printStackTrace();
         }
@@ -127,6 +137,16 @@ public class Sql2oRestaurantDao implements RestaurantDao {
                     .executeUpdate();
         } catch (Sql2oException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void clearAllFoodsByRestautantId(int id) {
+        String query = "DELETE FROM restaurants_foods WHERE restaurantId = :id";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(query)
+                    .addParameter("id", id)
+                    .executeUpdate();
         }
     }
 }

@@ -1,0 +1,11 @@
+<p>
+    <a href="/{{type}}/{{object.id}}/update" class="btn btn-warning">Edit</a>
+    <button type="button" data-toggle="collapse" data-target="#delete" class="btn btn-danger">Delete</button>
+    <div id="delete" class="collapse">
+        <div class="alert alert-danger">
+            Are you sure you want to delete {{object.name}}?
+        </div>
+        <a href="/{{type}}/{{object.id}}/delete" class="btn btn-success">Yes</a>
+        <button type="button" data-toggle="collapse" data-target="#delete" class="btn btn-danger">No</button>
+    </div>
+</p>

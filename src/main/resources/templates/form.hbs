@@ -1,0 +1,18 @@
+{{#partial "formHeader"}}
+    {{#if edit}}
+        <h1>Edit {{type}}</h1>
+        <form action="/{{type}}/{{edit.id}}/update" method="post">
+    {{else}}
+            <h1>Add a new {{type}}!</h1>
+        <form action="/{{type}}/new" method="post">
+    {{/if}}
+{{/partial}}
+
+{{#partial "formFooter"}}
+    {{#if edit}}
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="#" class="btn btn-danger" onclick="history.back()">Cancel</a>
+    {{else}}
+        <button type="submit" class="btn btn-success">Add new {{type}}</button>
+    {{/if}}
+{{/partial}}

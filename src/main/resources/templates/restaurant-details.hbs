@@ -1,28 +1,24 @@
 {{#partial "content"}}
-    {{#if edited}}
-        <div class="alert alert-success alert-dismissible">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Restaurant updated!</strong>
-        </div>
+    
+    {{> detailsHeader.hbs }}
+    
+    <p>Restaurant: {{object.name}}</p>
+    <p>Address: {{object.address}}, zip: {{object.zipcode}}</p>
+    <p>Phone: {{object.phone}}</p>
+    <p>Website: <a href="http://{{object.website}}" target="_blank">{{object.website}}</a></p>
+    <p>Email: {{object.email}}</p>
+    {{#if foods}}
+        <p>Serves:
+        {{#each foods}}
+            <button type="button" class="btn btn-default"><a href="/food/{{id}}">{{name}}</a></button>
+        {{/each}}
+        </p>
     {{/if}}
-    <p>Restaurant: {{restaurant.name}}</p>
-    <p>Address: {{restaurant.address}}, zip: {{restaurant.zipcode}}</p>
-    <p>Phone: {{restaurant.phone}}</p>
-    <p>Website: {{restaurant.website}}</p>
-    <p>Email: {{restaurant.email}}</p>
+
+    {{> detailsFooter.hbs }}
+
     <p>
-        <a href="/restaurants/{{restaurant.id}}/update" class="btn btn-warning">Edit</a>
-        <button type="button" data-toggle="collapse" data-target="#delete" class="btn btn-danger">Delete</button>
-        <div id="delete" class="collapse">
-            <div class="alert alert-danger">
-                Are you sure you want to delete {{restaurant.name}}?
-            </div>
-            <a href="/restaurants/{{restaurant.id}}/delete" class="btn btn-success">Yes</a>
-            <button type="button" data-toggle="collapse" data-target="#delete" class="btn btn-danger">No</button>
-        </div>
-    </p>
-    <p>
-        <a href="/restaurants/{{restaurant.id}}/ask" class="btn btn-primary">Find food!</a><br>
+        <a href="/restaurant/{{object.id}}/ask" class="btn btn-primary">Find food!</a><br>
     </p>
 {{/partial}}
 

@@ -1,16 +1,6 @@
 {{#partial "content"}}
 
-    {{#if deletedRestaurantName}}
-        <div class="alert alert-success alert-dismissible">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>{{deletedRestaurantName}}</strong> deleted.
-        </div>
-    {{else if addedRestaurantName}}
-        <div class="alert alert-success alert-dismissible">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>{{addedRestaurantName}}</strong> added.
-        </div>
-    {{/if}}
+    {{> deletedOrAddedAlert.hbs}}
 
     <h1>Restaurants:</h1>
 

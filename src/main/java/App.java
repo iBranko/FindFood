@@ -32,13 +32,14 @@ public class App {
         con = sql2o.open();
 
         //CREATE
-        get("restaurants/new", (req, res) -> {
+        get("restaurant/new", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
-            model.put("allRestaurants", restaurantDao.getAll());
+            model.put("type", "restaurant");
+            model.put("foods", foodDao.getAll());
             return new ModelAndView(model, "restaurant-form.hbs");
         }, new HandlebarsTemplateEngine());
 
-        post("restaurants/new", (req, res) -> {
+        post("restaurant/new", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             String name = req.queryParams("name");
             String address = req.queryParams("address");
@@ -48,18 +49,34 @@ public class App {
             String email = req.queryParams("email");
             Restaurant restaurant = new Restaurant(name, address, zipcode, phone, website, email);
             restaurantDao.add(restaurant);
-            model.put("restaurant", restaurant);
-            model.put("addedRestaurantName", name);
+            model.put("addedName", name);
             model.put("allRestaurants", restaurantDao.getAll());
             return new ModelAndView(model, "restaurants.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        get("food/new", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            model.put("type", "food");
+            return new ModelAndView(model, "food-form.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        post("food/new", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            String name = req.queryParams("name");
+            Food food = new Food(name);
+            foodDao.add(food);
+            model.put("addedName", name);
+            model.put("allFoods", foodDao.getAll());
+            return new ModelAndView(model, "foods.hbs");
         }, new HandlebarsTemplateEngine());
 
         //READ
         get("restaurant/:id", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
-            int restaurandId = Integer.parseInt(req.params("id"));
-            Restaurant restaurant = restaurantDao.getById(restaurandId);
-            model.put("restaurant", restaurant);
+            int restaurantId = Integer.parseInt(req.params("id"));
+            model.put("object", restaurantDao.getById(restaurantId));
+            model.put("type", "restaurant");
+            model.put("foods", restaurantDao.getAllFoodByRestaurantId(restaurantId));
             return new ModelAndView(model, "restaurant-details.hbs");
         }, new HandlebarsTemplateEngine());
 
@@ -77,24 +94,59 @@ public class App {
         get("/results", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             String text = req.queryParams("text");
-            List<Restaurant> allRestaurants = restaurantDao.getByName(text);
-            model.put("allRestaurants", allRestaurants);
-            return new ModelAndView(model, "restaurants.hbs");
+            if (restaurantDao.getByName(text).size() > 0 || foodDao.getByName(text).size() > 0) {
+                model.put("found", true);
+            }
+            model.put("allRestaurants", restaurantDao.getByName(text));
+            model.put("allFoods", foodDao.getByName(text));
+            return new ModelAndView(model, "results.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        get("food/:id/find", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int foodId = Integer.parseInt(req.params("id"));
+            if (foodDao.getAllRestaurantsForAFoodType(foodId).size() > 0) {
+                model.put("found", true);
+            }
+            model.put("allRestaurants", foodDao.getAllRestaurantsForAFoodType(foodId));
+            return new ModelAndView(model, "results.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        get("food/:id", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int foodId = Integer.parseInt(req.params("id"));
+            Food food = foodDao.getById(foodId);
+            model.put("object", food);
+            model.put("type", "food");
+            return new ModelAndView(model, "food-details.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        get("/foods", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            model.put("allFoods", foodDao.getAll());
+            return new ModelAndView(model, "foods.hbs");
         }, new HandlebarsTemplateEngine());
 
         //UPDATE
-        get("/restaurants/:id/update", (req, res) -> {
+        get("/restaurant/:id/update", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             int restaurantId = Integer.parseInt(req.params("id"));
-            Restaurant restaurant = restaurantDao.getById(restaurantId);
-            model.put("editRestaurant", restaurant);
+            model.put("edit", restaurantDao.getById(restaurantId));
+            model.put("type", "restaurant");
+            model.put("foods", foodDao.getAll());
             return new ModelAndView(model, "restaurant-form.hbs");
         }, new HandlebarsTemplateEngine());
 
-        post("/restaurants/:id/update", (req, res) -> {
+        post("/restaurant/:id/update", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             int restaurantId = Integer.parseInt(req.params("id"));
             Restaurant restaurant = restaurantDao.getById(restaurantId);
+
+            restaurantDao.clearAllFoodsByRestautantId(restaurantId);
+
+            for(String s : req.queryParamsValues("food")) {
+                restaurantDao.addRestaurantToFoodType(restaurant, foodDao.getById(Integer.parseInt(s)));
+            }
 
             String newName = req.queryParams("name");
             restaurant.setName(newName);
@@ -110,23 +162,58 @@ public class App {
             restaurant.setEmail(newEmail);
             restaurantDao.update(restaurant);
 
-            model.put("restaurant", restaurant);
+            model.put("object", restaurant);
             model.put("edited", true);
+            model.put("type", "restaurant");
 
             return new ModelAndView(model, "restaurant-details.hbs");
         }, new HandlebarsTemplateEngine());
 
+        get("/food/:id/update", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int foodId = Integer.parseInt(req.params("id"));
+            Food food = foodDao.getById(foodId);
+            model.put("edit", food);
+            model.put("type", "food");
+            return new ModelAndView(model, "food-form.hbs");
+        }, new HandlebarsTemplateEngine());
+
+        post("/food/:id/update", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int foodId = Integer.parseInt(req.params("id"));
+            Food food = foodDao.getById(foodId);
+
+            String newName = req.queryParams("name");
+            food.setName(newName);
+            foodDao.update(food);
+
+            model.put("object", food);
+            model.put("edited", true);
+            model.put("type", "food");
+
+            return new ModelAndView(model, "food-details.hbs");
+        }, new HandlebarsTemplateEngine());
+
         //DELETE
-        get("/restaurants/:id/delete", (req, res) -> {
+        get("/restaurant/:id/delete", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             int restaurantId = Integer.parseInt(req.params("id"));
             String name = restaurantDao.getById(restaurantId).getName();
-            model.put("deletedRestaurantName", name);
+            model.put("deletedName", name);
             restaurantDao.deleteById(restaurantId);
             model.put("allRestaurants", restaurantDao.getAll());
             return new ModelAndView(model, "restaurants.hbs");
         }, new HandlebarsTemplateEngine());
 
+        get("/food/:id/delete", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            int foodId = Integer.parseInt(req.params("id"));
+            String name = foodDao.getById(foodId).getName();
+            model.put("deletedName", name);
+            foodDao.deleteById(foodId);
+            model.put("allFoods", foodDao.getAll());
+            return new ModelAndView(model, "foods.hbs");
+        }, new HandlebarsTemplateEngine());
 
     }
 }

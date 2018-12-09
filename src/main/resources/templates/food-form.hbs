@@ -1,0 +1,17 @@
+{{#partial "content"}}
+
+    {{> formHeader.hbs}}
+
+        <div class="form-group">
+            <div class="col-xs-4">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" class="form-control" value="{{edit.name}}"><br>
+
+                {{> formFooter.hbs}}
+            </div>
+        </div>
+    </form>
+
+{{/partial}}
+
+{{> layout.hbs}}

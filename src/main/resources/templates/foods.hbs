@@ -1,0 +1,16 @@
+{{#partial "content"}}
+
+    {{> deletedOrAddedAlert.hbs}}
+
+    <h1>Foods:</h1>
+
+    {{#if allFoods}}
+        {{#each allFoods }}
+            <p>{{ content }} <a href="/food/{{id}}">{{name}}</a></p>
+        {{/each}}
+    {{else}}
+        <p>No foods found!</p>
+    {{/if}}
+{{/partial}}
+
+{{> layout.hbs}}

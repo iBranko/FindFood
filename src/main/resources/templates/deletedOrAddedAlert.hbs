@@ -1,0 +1,11 @@
+{{#if deletedName}}
+    <div class="alert alert-success alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{deletedName}}</strong> deleted.
+    </div>
+{{else if addedName}}
+    <div class="alert alert-success alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{{addedName}}</strong> added.
+    </div>
+{{/if}}

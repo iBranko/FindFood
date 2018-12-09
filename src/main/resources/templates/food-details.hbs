@@ -1,0 +1,14 @@
+{{#partial "content"}}
+    
+    {{> detailsHeader.hbs }}
+    
+    <p>Food: {{object.name}}</p>
+
+    {{> detailsFooter.hbs }}
+
+    <p>
+        <a href="/food/{{object.id}}/find" class="btn btn-primary">Find restaurants serving {{object.name}}!</a><br>
+    </p>
+{{/partial}}
+
+{{> layout.hbs}}

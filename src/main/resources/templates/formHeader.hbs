@@ -1,0 +1,8 @@
+
+{{#if edit}}
+    <h1>Edit {{type}}</h1>
+    <form action="/{{type}}/{{edit.id}}/update" method="post">
+{{else}}
+        <h1>Add a new {{type}}!</h1>
+    <form action="/{{type}}/new" method="post">
+{{/if}}
